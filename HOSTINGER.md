@@ -13,6 +13,8 @@ Cette application est une app Next.js avec Prisma et SQLite. Sur Hostinger Busin
 bash scripts/hostinger-build.sh
 ```
 
+Le projet est aligne sur `pnpm@11.11.0`, la version actuellement utilisee par Hostinger dans ton erreur de build.
+
 - Start command ou startup file:
 
 ```bash
