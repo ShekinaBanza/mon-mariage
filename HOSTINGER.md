@@ -16,6 +16,7 @@ bash scripts/hostinger-build.sh
 Le projet est aligne sur `pnpm@11.11.0`, la version actuellement utilisee par Hostinger dans ton erreur de build.
 Les scripts de build natifs requis par Prisma, Sharp et SWC sont approuves dans `pnpm-workspace.yaml`.
 Le check automatique `verifyDepsBeforeRun` est desactive pour eviter que pnpm tente de relancer `pnpm install` dans l'environnement Hostinger.
+Le script `build` lance `prisma generate` avant `next build`, car Next importe Prisma pendant la collecte des pages.
 
 - Start command ou startup file:
 
