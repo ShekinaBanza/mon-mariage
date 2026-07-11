@@ -51,6 +51,7 @@ https://ton-domaine.com/api/health
 ```
 
 La reponse doit contenir `"ok": true`. Si elle contient `"ok": false`, copie le message d'erreur et les logs de l'application Hostinger.
+La normalisation SQLite est aussi faite dans `src/lib/db.ts`, au cas ou Hostinger demarre directement le serveur Next standalone au lieu de `hostinger-server.js`.
 
 ## Point d'entree
 

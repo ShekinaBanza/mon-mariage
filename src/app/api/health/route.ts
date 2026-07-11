@@ -13,17 +13,18 @@ function getDatabaseInfo() {
 }
 
 export async function GET() {
-  const database = getDatabaseInfo();
-
   try {
     const { db } = await import("@/lib/db");
     await db.weddingSettings.count();
+    const database = getDatabaseInfo();
 
     return NextResponse.json({
       ok: true,
       database,
     });
   } catch (error) {
+    const database = getDatabaseInfo();
+
     return NextResponse.json(
       {
         ok: false,
