@@ -23,6 +23,9 @@ if (sqlitePath) {
   if (!fs.existsSync(sqlitePath) && fs.existsSync(bundledDatabase)) {
     fs.copyFileSync(bundledDatabase, sqlitePath);
   }
+
+  process.env.DATABASE_URL = `file:${sqlitePath}`;
+  console.log(`[hostinger] SQLite database ready: ${sqlitePath}`);
 }
 
 require("./.next/standalone/server.js");

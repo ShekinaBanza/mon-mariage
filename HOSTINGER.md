@@ -40,6 +40,17 @@ NEXT_PUBLIC_BASE_URL=https://ton-domaine.com
 ```
 
 `hostinger-server.js` cree `data/custom.db` au premier demarrage en copiant `db/custom.db`. Ensuite l'application ecrit dans `data/custom.db`, qui ne doit pas etre commite dans Git.
+Au demarrage, `hostinger-server.js` convertit aussi `DATABASE_URL` en chemin SQLite absolu pour eviter les differences de dossier de travail entre hPanel et Next standalone.
+
+## Diagnostic
+
+Apres le demarrage, ouvre:
+
+```text
+https://ton-domaine.com/api/health
+```
+
+La reponse doit contenir `"ok": true`. Si elle contient `"ok": false`, copie le message d'erreur et les logs de l'application Hostinger.
 
 ## Point d'entree
 
