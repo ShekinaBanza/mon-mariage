@@ -1,0 +1,250 @@
+Progress: resolved 1, reused 0, downloaded 0, added 0
+[WARN] deprecated @types/bcryptjs@3.0.0: This is a stub types definition. bcryptjs provides its own type definitions, so you do not need this installed.
+Progress: resolved 16, reused 16, downloaded 0, added 0
+Progress: resolved 17, reused 16, downloaded 0, added 0
+Progress: resolved 59, reused 56, downloaded 0, added 0
+Progress: resolved 64, reused 62, downloaded 0, added 0
+[WARN] deprecated recharts@2.15.4: 1.x and 2.x branches are no longer active. Bump to Recharts v3 to receive latest features and bugfixes. See https://github.com/recharts/recharts/wiki/3.0-migration-guide
+Progress: resolved 82, reused 81, downloaded 0, added 0
+Progress: resolved 82, reused 81, downloaded 1, added 0
+Progress: resolved 167, reused 165, downloaded 1, added 0
+Progress: resolved 223, reused 218, downloaded 1, added 0
+Progress: resolved 256, reused 244, downloaded 1, added 0
+Progress: resolved 370, reused 336, downloaded 2, added 0
+Progress: resolved 375, reused 340, downloaded 2, added 0
+Progress: resolved 406, reused 349, downloaded 2, added 0
+Progress: resolved 455, reused 398, downloaded 2, added 0
+Progress: resolved 481, reused 424, downloaded 2, added 0
+Progress: resolved 514, reused 447, downloaded 2, added 0
+Progress: resolved 540, reused 447, downloaded 2, added 0
+Progress: resolved 603, reused 447, downloaded 2, added 0
+Progress: resolved 610, reused 447, downloaded 2, added 0
+Progress: resolved 610, reused 447, downloaded 3, added 0
+Progress: resolved 666, reused 447, downloaded 3, added 0
+Progress: resolved 675, reused 447, downloaded 3, added 0
+Progress: resolved 683, reused 447, downloaded 3, added 0
+Progress: resolved 692, reused 447, downloaded 3, added 0
+Progress: resolved 715, reused 447, downloaded 3, added 0
+Progress: resolved 747, reused 447, downloaded 3, added 0
+Progress: resolved 772, reused 447, downloaded 3, added 0
+Progress: resolved 811, reused 447, downloaded 4, added 0
+Progress: resolved 882, reused 447, downloaded 4, added 0
+Progress: resolved 903, reused 447, downloaded 4, added 0
+Progress: resolved 903, reused 447, downloaded 5, added 0
+Progress: resolved 929, reused 447, downloaded 5, added 0
+Progress: resolved 951, reused 447, downloaded 9, added 0
+[WARN] 2 deprecated subdependencies found: intersection-observer@0.10.0, uuid@8.3.2
+Progress: resolved 954, reused 447, downloaded 13, added 0
+Packages: +853
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 954, reused 447, downloaded 15, added 7
+Progress: resolved 954, reused 447, downloaded 15, added 14
+Progress: resolved 954, reused 447, downloaded 18, added 18
+Progress: resolved 954, reused 447, downloaded 21, added 21
+Progress: resolved 954, reused 447, downloaded 25, added 25
+Progress: resolved 954, reused 447, downloaded 28, added 28
+Progress: resolved 954, reused 447, downloaded 31, added 31
+Progress: resolved 954, reused 447, downloaded 36, added 36
+Progress: resolved 954, reused 447, downloaded 40, added 40
+Progress: resolved 954, reused 447, downloaded 44, added 44
+Progress: resolved 954, reused 447, downloaded 45, added 44
+Progress: resolved 954, reused 447, downloaded 49, added 49
+Progress: resolved 954, reused 447, downloaded 52, added 52
+Progress: resolved 954, reused 447, downloaded 54, added 53
+Progress: resolved 954, reused 447, downloaded 57, added 57
+Progress: resolved 954, reused 447, downloaded 61, added 61
+Progress: resolved 954, reused 447, downloaded 64, added 64
+Progress: resolved 954, reused 447, downloaded 69, added 69
+Progress: resolved 954, reused 447, downloaded 75, added 75
+Progress: resolved 954, reused 447, downloaded 80, added 80
+Progress: resolved 954, reused 447, downloaded 83, added 83
+Progress: resolved 954, reused 447, downloaded 86, added 86
+Progress: resolved 954, reused 447, downloaded 90, added 89
+Progress: resolved 954, reused 447, downloaded 92, added 92
+Progress: resolved 954, reused 447, downloaded 94, added 94
+Progress: resolved 954, reused 447, downloaded 97, added 97
+Progress: resolved 954, reused 447, downloaded 98, added 98
+Progress: resolved 954, reused 447, downloaded 99, added 98
+Progress: resolved 954, reused 447, downloaded 99, added 99
+Progress: resolved 954, reused 447, downloaded 100, added 99
+Progress: resolved 954, reused 447, downloaded 103, added 103
+Progress: resolved 954, reused 447, downloaded 106, added 106
+Progress: resolved 954, reused 447, downloaded 111, added 111
+Progress: resolved 954, reused 447, downloaded 115, added 115
+Progress: resolved 954, reused 447, downloaded 119, added 119
+Progress: resolved 954, reused 447, downloaded 120, added 119
+Progress: resolved 954, reused 447, downloaded 124, added 124
+Progress: resolved 954, reused 447, downloaded 128, added 128
+Progress: resolved 954, reused 447, downloaded 130, added 129
+Progress: resolved 954, reused 447, downloaded 133, added 133
+Progress: resolved 954, reused 447, downloaded 138, added 138
+Progress: resolved 954, reused 447, downloaded 143, added 143
+Progress: resolved 954, reused 447, downloaded 148, added 148
+Progress: resolved 954, reused 447, downloaded 149, added 149
+Progress: resolved 954, reused 447, downloaded 152, added 151
+Progress: resolved 954, reused 447, downloaded 157, added 156
+Progress: resolved 954, reused 447, downloaded 162, added 162
+Progress: resolved 954, reused 447, downloaded 168, added 168
+Progress: resolved 954, reused 447, downloaded 172, added 172
+Progress: resolved 954, reused 447, downloaded 174, added 172
+Progress: resolved 954, reused 447, downloaded 177, added 177
+Progress: resolved 954, reused 447, downloaded 181, added 181
+Progress: resolved 954, reused 447, downloaded 186, added 186
+Progress: resolved 954, reused 447, downloaded 189, added 189
+Progress: resolved 954, reused 447, downloaded 191, added 191
+Progress: resolved 954, reused 447, downloaded 193, added 193
+Progress: resolved 954, reused 447, downloaded 195, added 195
+Progress: resolved 954, reused 447, downloaded 196, added 196
+Progress: resolved 954, reused 447, downloaded 197, added 197
+Progress: resolved 954, reused 447, downloaded 199, added 199
+Progress: resolved 954, reused 447, downloaded 200, added 200
+Progress: resolved 954, reused 447, downloaded 201, added 201
+Progress: resolved 954, reused 447, downloaded 202, added 202
+Progress: resolved 954, reused 447, downloaded 204, added 204
+Progress: resolved 954, reused 447, downloaded 205, added 205
+Progress: resolved 954, reused 447, downloaded 206, added 206
+Progress: resolved 954, reused 447, downloaded 208, added 208
+Progress: resolved 954, reused 447, downloaded 213, added 213
+Progress: resolved 954, reused 447, downloaded 215, added 215
+Progress: resolved 954, reused 447, downloaded 219, added 219
+Progress: resolved 954, reused 447, downloaded 221, added 221
+Progress: resolved 954, reused 447, downloaded 226, added 226
+Progress: resolved 954, reused 447, downloaded 229, added 229
+Progress: resolved 954, reused 447, downloaded 232, added 232
+Progress: resolved 954, reused 447, downloaded 237, added 237
+Progress: resolved 954, reused 447, downloaded 241, added 241
+Progress: resolved 954, reused 447, downloaded 243, added 242
+Progress: resolved 954, reused 447, downloaded 248, added 248
+Progress: resolved 954, reused 447, downloaded 252, added 251
+Progress: resolved 954, reused 447, downloaded 256, added 256
+Progress: resolved 954, reused 447, downloaded 262, added 262
+Progress: resolved 954, reused 447, downloaded 266, added 266
+Progress: resolved 954, reused 447, downloaded 269, added 269
+Progress: resolved 954, reused 447, downloaded 274, added 274
+Progress: resolved 954, reused 447, downloaded 278, added 278
+Progress: resolved 954, reused 447, downloaded 282, added 282
+Progress: resolved 954, reused 447, downloaded 286, added 286
+Progress: resolved 954, reused 447, downloaded 292, added 292
+Progress: resolved 954, reused 447, downloaded 294, added 294
+Progress: resolved 954, reused 447, downloaded 300, added 300
+Progress: resolved 954, reused 447, downloaded 306, added 306
+Progress: resolved 954, reused 447, downloaded 310, added 310
+Progress: resolved 954, reused 447, downloaded 315, added 315
+Progress: resolved 954, reused 447, downloaded 319, added 319
+Progress: resolved 954, reused 447, downloaded 324, added 324
+Progress: resolved 954, reused 447, downloaded 329, added 329
+Progress: resolved 954, reused 447, downloaded 334, added 334
+Progress: resolved 954, reused 447, downloaded 339, added 339
+Progress: resolved 954, reused 447, downloaded 342, added 342
+Progress: resolved 954, reused 447, downloaded 345, added 345
+Progress: resolved 954, reused 447, downloaded 349, added 349
+Progress: resolved 954, reused 447, downloaded 353, added 353
+Progress: resolved 954, reused 447, downloaded 354, added 353
+Progress: resolved 954, reused 447, downloaded 355, added 353
+Progress: resolved 954, reused 447, downloaded 358, added 355
+Progress: resolved 954, reused 447, downloaded 362, added 359
+Progress: resolved 954, reused 447, downloaded 363, added 359
+Progress: resolved 954, reused 447, downloaded 368, added 363
+Progress: resolved 954, reused 447, downloaded 373, added 368
+Progress: resolved 954, reused 447, downloaded 378, added 373
+Progress: resolved 954, reused 447, downloaded 382, added 377
+Progress: resolved 954, reused 447, downloaded 384, added 377
+Progress: resolved 954, reused 447, downloaded 388, added 383
+Progress: resolved 954, reused 447, downloaded 394, added 389
+Progress: resolved 954, reused 447, downloaded 400, added 395
+Progress: resolved 954, reused 447, downloaded 405, added 400
+Progress: resolved 954, reused 447, downloaded 409, added 404
+Progress: resolved 954, reused 447, downloaded 410, added 404
+Progress: resolved 954, reused 447, downloaded 410, added 405
+Progress: resolved 954, reused 447, downloaded 411, added 405
+Progress: resolved 954, reused 447, downloaded 412, added 407, done
+
+dependencies:
++ @dnd-kit/core 6.3.1
++ @dnd-kit/sortable 10.0.0
++ @dnd-kit/utilities 3.2.2
++ @hookform/resolvers 5.4.0
++ @mdxeditor/editor 3.55.0 (4.0.4 is available)
++ @prisma/client 6.19.3 (7.8.0 is available)
++ @radix-ui/react-accordion 1.2.16
++ @radix-ui/react-alert-dialog 1.1.19
++ @radix-ui/react-aspect-ratio 1.1.11
++ @radix-ui/react-avatar 1.2.2
++ @radix-ui/react-checkbox 1.3.7
++ @radix-ui/react-collapsible 1.1.16
++ @radix-ui/react-context-menu 2.3.3
++ @radix-ui/react-dialog 1.1.19
++ @radix-ui/react-dropdown-menu 2.1.20
++ @radix-ui/react-hover-card 1.1.19
++ @radix-ui/react-label 2.1.11
++ @radix-ui/react-menubar 1.1.20
++ @radix-ui/react-navigation-menu 1.2.18
++ @radix-ui/react-popover 1.1.19
++ @radix-ui/react-progress 1.1.12
++ @radix-ui/react-radio-group 1.4.3
++ @radix-ui/react-scroll-area 1.2.14
++ @radix-ui/react-select 2.3.3
++ @radix-ui/react-separator 1.1.11
++ @radix-ui/react-slider 1.4.3
++ @radix-ui/react-slot 1.3.0
++ @radix-ui/react-switch 1.3.3
++ @radix-ui/react-tabs 1.1.17
++ @radix-ui/react-toast 1.2.19
++ @radix-ui/react-toggle 1.1.14
++ @radix-ui/react-toggle-group 1.1.15
++ @radix-ui/react-tooltip 1.2.12
++ @reactuses/core 6.4.0
++ @tanstack/react-query 5.101.2
++ @tanstack/react-table 8.21.3
++ bcryptjs 3.0.3
++ class-variance-authority 0.7.1
++ clsx 2.1.1
++ cmdk 1.1.1
++ date-fns 4.4.0
++ embla-carousel-react 8.6.0
++ framer-motion 12.42.2
++ input-otp 1.4.2
++ jose 6.2.3
++ jsqr 1.4.0
++ lucide-react 0.525.0 (1.24.0 is available)
++ next 16.2.10
++ next-auth 4.24.14
++ next-intl 4.13.2
++ next-themes 0.4.6
++ pdf-lib 1.17.1
++ prisma 6.19.3 (7.8.0 is available)
++ qrcode 1.5.4
++ react 19.2.7
++ react-day-picker 9.14.0 (10.0.1 is available)
++ react-dom 19.2.7
++ react-hook-form 7.81.0
++ react-markdown 10.1.0
++ react-resizable-panels 3.0.6 (4.12.1 is available)
++ react-syntax-highlighter 15.6.6 (16.1.1 is available)
++ recharts 2.15.4 (3.9.2 is available) deprecated
++ sharp 0.34.5 (0.35.3 is available)
++ sonner 2.0.7
++ tailwind-merge 3.6.0
++ tailwindcss-animate 1.0.7
++ uuid 11.1.1 (14.0.1 is available)
++ vaul 1.1.2
++ z-ai-web-dev-sdk 0.0.18
++ zod 4.4.3
++ zustand 5.0.14
+
+devDependencies:
++ @tailwindcss/postcss 4.3.2
++ @types/bcryptjs 3.0.0 deprecated
++ @types/qrcode 1.5.6
++ @types/react 19.2.17
++ @types/react-dom 19.2.3
++ bun-types 1.3.14
++ eslint 9.39.4 (10.7.0 is available)
++ eslint-config-next 16.2.10
++ tailwindcss 4.3.2
++ tw-animate-css 1.4.0
++ typescript 5.9.3 (7.0.2 is available)
+
+[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: @parcel/watcher@2.5.6, @prisma/client@6.19.3, @prisma/engines@6.19.3, @swc/core@1.15.43, es5-ext@0.10.64, prisma@6.19.3, sharp@0.34.5, unrs-resolver@1.12.2
+
+Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.

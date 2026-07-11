@@ -1,0 +1,342 @@
+// Wedding Invitation Application — Prisma Schema
+// S & R — Shekina BANZA & Ruth KASONGO — 28 août 2026
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// AUTH & ROLES
+// ============================================================
+
+model User {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  passwordHash    String
+  role            String   @default("reader") // super_admin | organizer | registration_agent | control_agent | reader
+  active          Boolean  @default(true)
+  lastLoginAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  attendanceLogs  AttendanceLog[]
+  scanLogs        ScanLog[]
+  activityLogs    ActivityLog[]
+  loginAttempts   LoginAttempt[]
+
+  @@index([role])
+}
+
+model LoginAttempt {
+  id        Int      @id @default(autoincrement())
+  userId    String?
+  email     String
+  ip        String?
+  userAgent String?
+  success   Boolean
+  reason    String?
+  at        DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([email])
+  @@index([at])
+}
+
+// ============================================================
+// WEDDING CONFIG (singleton row, id = "default")
+// ============================================================
+
+model WeddingSettings {
+  id                   String   @id @default("default")
+  // Mariés
+  groomFirstName       String   @default("Shekina")
+  groomLastName        String   @default("BANZA")
+  brideFirstName       String   @default("Ruth")
+  brideLastName        String   @default("KASONGO")
+  monogram             String   @default("S & R")
+  eventTitle           String   @default("Invitation au Mariage")
+  // Dates / lieux
+  weddingDate          DateTime @default("2026-08-28T00:00:00Z")
+  ceremonyAddress      String   @default("Paroisse Saint-Paul Carrefour")
+  ceremonyTime         String   @default("11h00")
+  receptionAddress     String   @default("Salle de réception — à confirmer")
+  receptionTime        String   @default("19h00")
+  mapsLink             String   @default("")
+  // Textes
+  invitationText       String   @default("Avec une immense joie et une profonde reconnaissance envers Dieu, nous souhaitons partager avec vous l'un des plus beaux moments de notre vie. Nous avons le plaisir de vous inviter à la célébration de notre mariage qui aura lieu le vendredi 28 août 2026. Nous serions très heureux de vous compter parmi nous pour célébrer ce jour si spécial.")
+  giftMessage          String   @default("Si vous souhaitez également nous accompagner par un cadeau, nous privilégions les cadeaux en espèces, qui nous aideront à bien commencer notre nouvelle vie à deux.")
+  romanticPhrase       String   @default("L'amour ne faille jamais.")
+  closingSignature     String   @default("Avec toute notre affection, Shekina BANZA & Ruth KASONGO")
+  instructions         String   @default("")
+  // Visuel
+  primaryColor         String   @default("#6B8E5A")   // vert clair
+  secondaryColor       String   @default("#C9A961")   // brun doré
+  accentColor          String   @default("#F5EFE0")   // ivoire
+  font                 String   @default("Cormorant Garamond")
+  logoUrl              String?
+  socialImageUrl       String?
+  // Limites
+  maxPeople            Int      @default(300)
+  maxInvitations       Int      @default(200)
+  // Inscriptions
+  registrationOpen     Boolean  @default(true)
+  registrationDeadline DateTime?
+  validationMode       String   @default("auto") // auto | manual
+  showSeatsOnInvitation Boolean @default(true)
+  tableFormat          String   @default("numeric") // numeric | alpha | custom
+  whatsappContact      String   @default("")
+  contactEmail         String?
+  publicBaseUrl        String   @default("")
+
+  updatedAt            DateTime @updatedAt
+}
+
+// ============================================================
+// TABLES & SEATS
+// ============================================================
+
+model Table {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  zone        String   @default("common") // groom | bride | common
+  capacity    Int      @default(8)
+  positionX   Float    @default(0)
+  positionY   Float    @default(0)
+  shape       String   @default("round") // round | rect
+  active      Boolean  @default(true)
+  locked      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  seats        Seat[]
+  assignments  SeatAssignment[]
+  invitations  Invitation[]
+
+  @@index([zone])
+  @@index([active])
+}
+
+model Seat {
+  id          String   @id @default(cuid())
+  tableId     String
+  number      Int
+  code        String   // e.g. T1C1, TAC1
+  positionX   Float    @default(0) // relative to table center
+  positionY   Float    @default(0)
+  status      String   @default("available") // available | reserved | occupied | disabled
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  table       Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  assignments SeatAssignment[]
+
+  @@unique([tableId, number])
+  @@index([tableId])
+  @@index([status])
+}
+
+// ============================================================
+// GUESTS / INVITATIONS / MEMBERS
+// ============================================================
+
+model Guest {
+  id           String   @id @default(cuid())
+  firstName    String
+  lastName     String
+  middleName   String?
+  whatsapp     String
+  email        String?
+  sex          String?  // male | female
+  side         String   @default("groom") // groom | bride
+  comment      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  invitations  Invitation[]
+
+  @@index([whatsapp])
+  @@index([email])
+  @@index([lastName, firstName])
+}
+
+model Invitation {
+  id              String   @id @default(cuid())
+  code            String   @unique  // backup code, e.g. BAN-T1-X7K9
+  publicToken     String   @unique  // opaque URL token
+  qrCode          String   @unique  // short 6-char code embedded in the QR code, linked to the person/couple
+  type            String   @default("individual") // individual | couple
+  side            String   @default("groom") // groom | bride
+  status          String   @default("pending") // pending | approved | rejected | cancelled | active | expired
+  assignmentState String   @default("unassigned") // unassigned | partially_assigned | assigned
+  presenceState   String   @default("not_arrived") // not_arrived | partially_arrived | arrived | refused_entry
+  seatCount       Int      @default(1)
+  tableId         String?
+  pdfPath         String?
+  imagePath       String?
+  qrcodePath      String?
+  validatedAt     DateTime?
+  validatedById   String?
+  cancelledAt     DateTime?
+  cancelledReason String?
+  arrivedAt       DateTime?
+  arrivedById     String?
+  lastShareAt     DateTime?
+  lastGeneratedAt DateTime?
+  comment         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  guestId         String
+  guest           Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  table           Table?   @relation(fields: [tableId], references: [id], onDelete: SetNull)
+  members         InvitationMember[]
+  assignments     SeatAssignment[]
+  attendanceLogs  AttendanceLog[]
+  scanLogs        ScanLog[]
+  downloads       InvitationDownload[]
+  shares          InvitationShare[]
+
+  @@index([status])
+  @@index([side])
+  @@index([tableId])
+  @@index([guestId])
+}
+
+model InvitationMember {
+  id           String   @id @default(cuid())
+  invitationId String
+  firstName    String
+  lastName     String
+  middleName   String?
+  sex          String?
+  title        String?  // Monsieur | Madame | Mademoiselle | Couple
+  arrived      Boolean  @default(false)
+  arrivedAt    DateTime?
+  createdAt    DateTime @default(now())
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  assignments  SeatAssignment[]
+
+  @@index([invitationId])
+}
+
+// ============================================================
+// SEAT ASSIGNMENTS
+// ============================================================
+
+model SeatAssignment {
+  id              String   @id @default(cuid())
+  seatId          String
+  tableId         String
+  invitationId    String
+  memberId        String?
+  createdAt       DateTime @default(now())
+
+  seat            Seat       @relation(fields: [seatId], references: [id], onDelete: Cascade)
+  table           Table      @relation(fields: [tableId], references: [id], onDelete: Cascade)
+  invitation      Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  member          InvitationMember? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+
+  @@unique([seatId])
+  @@index([tableId])
+  @@index([invitationId])
+}
+
+// ============================================================
+// LOGS
+// ============================================================
+
+model AttendanceLog {
+  id           String   @id @default(cuid())
+  invitationId String
+  memberId     String?
+  agentId      String?
+  action       String   // confirm_entry | refuse_entry | partial_arrival | reset
+  note         String?
+  ip           String?
+  at           DateTime @default(now())
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  agent        User?      @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  @@index([invitationId])
+  @@index([at])
+}
+
+model ScanLog {
+  id            String   @id @default(cuid())
+  invitationId  String?
+  agentId       String?
+  input         String   // token or code scanned
+  result        String   // valid | already_used | invalid | cancelled | refused | error
+  device        String?
+  ip            String?
+  note          String?
+  at            DateTime @default(now())
+
+  invitation    Invitation? @relation(fields: [invitationId], references: [id], onDelete: SetNull)
+  agent         User?       @relation(fields: [agentId], references: [id], onDelete: SetNull)
+
+  @@index([invitationId])
+  @@index([result])
+  @@index([at])
+}
+
+model FailedScanAttempt {
+  id        Int      @id @default(autoincrement())
+  input     String
+  reason    String
+  ip        String?
+  at        DateTime @default(now())
+
+  @@index([input])
+  @@index([at])
+}
+
+model InvitationDownload {
+  id           String   @id @default(cuid())
+  invitationId String
+  format       String   // pdf | jpg | png
+  ip           String?
+  at           DateTime @default(now())
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+}
+
+model InvitationShare {
+  id           String   @id @default(cuid())
+  invitationId String
+  channel      String   // whatsapp | email | copy | other
+  ip           String?
+  at           DateTime @default(now())
+
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([invitationId])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String?
+  meta      String?
+  ip        String?
+  at        DateTime @default(now())
+
+  actor     User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([action])
+  @@index([at])
+}

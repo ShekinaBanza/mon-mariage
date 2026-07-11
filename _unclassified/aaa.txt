@@ -1,0 +1,181 @@
+my-project/
+│
+├─ 📄 package.json                    ← Dépendances & scripts (dev, lint, db:push)
+├─ 📄 next.config.ts                  ← Configuration Next.js 16
+├─ 📄 tailwind.config.ts              ← Configuration Tailwind CSS 4
+├─ 📄 components.json                 ← Configuration shadcn/ui
+├─ 📄 tsconfig.json                   ← Configuration TypeScript
+├─ 📄 Caddyfile                       ← Configuration du gateway/reverse-proxy
+├─ 📄 worklog.md                      ← Journal de travail & historique
+├─ 📄 dev.log                         ← Logs du serveur de développement
+│
+├─ 📁 prisma/                         ─── BASE DE DONNÉES ───
+│  ├─ 📄 schema.prisma                ← Schéma complet (18 modèles)
+│  ├─ 📄 seed.ts                      ← Données initiales (admin + tables)
+│  └─ 📄 reset-demo.ts                ← Script de réinitialisation
+│
+├─ 📁 db/
+│  └─ 📄 custom.db                    ← Base SQLite
+│
+├─ 📁 public/                         ─── RESSOURCES STATIQUES ───
+│  ├─ 📄 logo.svg
+│  ├─ 📄 robots.txt
+│  ├─ 📁 fonts/                       ← Polices Google Fonts (TTF statiques)
+│  │   ├─ PlayfairDisplay-400.ttf
+│  │   ├─ PlayfairDisplay-600.ttf
+│  │   ├─ PlayfairDisplay-700.ttf
+│  │   ├─ CormorantGaramond-400.ttf
+│  │   ├─ CormorantGaramond-500.ttf
+│  │   ├─ CormorantGaramond-600.ttf
+│  │   ├─ Jost-400.ttf
+│  │   └─ Jost-500.ttf
+│  └─ 📁 storage/                     ← Fichiers générés (PDF/JPG/QR)
+│      ├─ 📁 qr/
+│      ├─ 📁 pdf/
+│      └─ 📁 img/
+│
+└─ 📁 src/                            ─── CODE SOURCE ───
+   │
+   ├─ 📁 app/                         ─── ROUTES NEXT.JS (App Router) ───
+   │  │
+   │  ├─ 📄 layout.tsx                ← Layout racine + polices + métadonnées
+   │  ├─ 📄 globals.css               ← Thème (vert/ivoire/beige/doré) + animations
+   │  ├─ 📄 page.tsx                  ← 🏠 Page d'accueil publique (compte à rebours)
+   │  │
+   │  ├─ 📁 register/                 ← Inscription publique
+   │  │  └─ 📄 page.tsx               ← Flux multi-étapes (type → form → succès)
+   │  │
+   │  ├─ 📁 find/                     ← Recherche d'invitation
+   │  │  └─ 📄 page.tsx               ← Recherche par code/WhatsApp/email
+   │  │
+   │  ├─ 📁 i/                        ← Invitation publique
+   │  │  └─ 📁 [token]/
+   │  │     └─ 📄 page.tsx            ← 🎫 Page d'invitation (/i/TOKEN)
+   │  │
+   │  ├─ 📁 scan/                     ← Scanner QR (protégé)
+   │  │  └─ 📄 page.tsx               ← Caméra + saisie manuelle
+   │  │
+   │  ├─ 📁 admin/                    ─── ESPACE ADMINISTRATION ───
+   │  │  │
+   │  │  ├─ 📁 login/
+   │  │  │  └─ 📄 page.tsx            ← Connexion sécurisée
+   │  │  │
+   │  │  └─ 📁 (protected)/           ← Groupe protégé (auth requise)
+   │  │     ├─ 📄 layout.tsx          ← Shell admin (sidebar + header)
+   │  │     ├─ 📄 page.tsx            ← 📊 Tableau de bord (stats temps réel)
+   │  │     │
+   │  │     ├─ 📁 guests/
+   │  │     │  └─ 📄 page.tsx         ← 👥 Gestion des invités
+   │  │     │
+   │  │     ├─ 📁 tables/
+   │  │     │  └─ 📄 page.tsx         ← 🪑 Tables & chaises (CRUD)
+   │  │     │
+   │  │     ├─ 📁 floorplan/
+   │  │     │  └─ 📄 page.tsx         ← 🗺️ Plan de salle interactif
+   │  │     │
+   │  │     ├─ 📁 scan-logs/
+   │  │     │  └─ 📄 page.tsx         ← 📋 Historique des scans
+   │  │     │
+   │  │     ├─ 📁 settings/
+   │  │     │  └─ 📄 page.tsx         ← ⚙️ Paramètres du mariage
+   │  │     │
+   │  │     └─ 📁 lists/
+   │  │        └─ 📄 page.tsx         ← 🖨️ Listes imprimables de secours
+   │  │
+   │  └─ 📁 api/                      ─── API ROUTES (backend) ───
+   │     │
+   │     ├─ 📄 route.ts               ← Health check
+   │     │
+   │     ├─ 📁 auth/                  ← Authentification
+   │     │  ├─ 📄 route.ts            ← POST login / DELETE logout
+   │     │  └─ 📁 me/
+   │     │     └─ 📄 route.ts         ← GET session courante
+   │     │
+   │     ├─ 📁 register/
+   │     │  └─ 📄 route.ts            ← POST inscription invité
+   │     │
+   │     ├─ 📁 find/
+   │     │  └─ 📄 route.ts            ← POST recherche invitation
+   │     │
+   │     ├─ 📁 invitation/
+   │     │  └─ 📁 [token]/
+   │     │     ├─ 📁 download/
+   │     │     │  └─ 📄 route.ts      ← GET PDF/JPG/PNG
+   │     │     └─ 📁 share/
+   │     │        └─ 📄 route.ts      ← POST journaliser partage
+   │     │
+   │     ├─ 📁 og/
+   │     │  └─ 📄 route.ts            ← GET image Open Graph (1200×630)
+   │     │
+   │     ├─ 📁 dashboard/
+   │     │  └─ 📄 route.ts            ← GET statistiques temps réel
+   │     │
+   │     ├─ 📁 guests/
+   │     │  ├─ 📄 route.ts            ← GET liste paginée
+   │     │  └─ 📁 [id]/
+   │     │     ├─ 📄 route.ts         ← GET/PATCH/DELETE un invité
+   │     │     └─ 📁 action/
+   │     │        └─ 📄 route.ts      ← POST valider/refuser/annuler/déplacer…
+   │     │
+   │     ├─ 📁 tables/
+   │     │  ├─ 📄 route.ts            ← GET/POST tables
+   │     │  └─ 📁 [id]/
+   │     │     └─ 📄 route.ts         ← PATCH/DELETE une table
+   │     │
+   │     ├─ 📁 settings/
+   │     │  └─ 📄 route.ts            ← GET/PUT paramètres mariage
+   │     │
+   │     ├─ 📁 scan/
+   │     │  ├─ 📄 route.ts            ← POST lookup (QR/code → invitation)
+   │     │  └─ 📁 confirm/
+   │     │     └─ 📄 route.ts         ← POST confirmer/refuser entrée
+   │     │
+   │     ├─ 📁 scan-logs/
+   │     │  └─ 📄 route.ts            ← GET historique scans paginé
+   │     │
+   │     └─ 📁 exports/
+   │        └─ 📄 route.ts            ← GET export CSV (tous/présents/absents)
+   │
+   ├─ 📁 components/                  ─── COMPOSANTS RÉUTILISABLES ───
+   │  │
+   │  ├─ 📁 ui/                       ← shadcn/ui (40+ composants)
+   │  │  ├─ 📄 button.tsx
+   │  │  ├─ 📄 card.tsx
+   │  │  ├─ 📄 dialog.tsx
+   │  │  ├─ 📄 input.tsx
+   │  │  ├─ 📄 select.tsx
+   │  │  ├─ 📄 table.tsx
+   │  │  ├─ 📄 badge.tsx
+   │  │  ├─ 📄 tabs.tsx
+   │  │  ├─ 📄 skeleton.tsx
+   │  │  ├─ 📄 toast.tsx
+   │  │  ├─ 📄 … (40 composants au total)
+   │  │  └─ 📄 toaster.tsx
+   │  │
+   │  └─ 📁 wedding/                  ← Composants métier mariage
+   │     ├─ 📄 monogram.tsx           ← Monogramme S & R (avec anneau décoratif)
+   │     ├─ 📄 floral-decorations.tsx ← Coins floraux, diviseurs, pétales animés
+   │     ├─ 📄 countdown.tsx          ← Compte à rebours (28 août 2026)
+   │     ├─ 📄 site-footer.tsx        ← Pied de page public sticky
+   │     ├─ 📄 invitation-actions.tsx ← Boutons PDF/JPG/WhatsApp/imprimer
+   │     └─ 📄 admin-shell.tsx        ← Shell admin (sidebar + header + logout)
+   │
+   ├─ 📁 hooks/                       ─── HOOKS REACT ───
+   │  ├─ 📄 use-toast.ts
+   │  └─ 📄 use-mobile.ts
+   │
+   └─ 📁 lib/                         ─── LOGIQUE MÉTIER (services) ───
+      │
+      ├─ 📄 db.ts                     ← Client Prisma (singleton)
+      ├─ 📄 utils.ts                  ← Utilitaires (cn, formatage)
+      │
+      ├─ 📄 constants.ts              ← Constantes & enums (statuts, rôles, permissions)
+      ├─ 📄 auth.ts                   ← Auth JWT (jose + bcrypt + sessions)
+      ├─ 📄 codes.ts                  ← Génération codes (qrCode 6 car., code secours)
+      ├─ 📄 qr.ts                     ← Génération QR codes (qrcode lib)
+      ├─ 📄 fonts.ts                  ← Polices base64 (Playfair/Cormorant/Jost)
+      ├─ 📄 settings.ts               ← Singleton config mariage (cache React)
+      │
+      ├─ 📄 registration.ts           ← Service inscription + détection doublons
+      ├─ 📄 seat-service.ts           ← Attribution chaises (transactions SQL)
+      └─ 📄 invitation-render.ts      ← Génération SVG → PNG/JPG/PDF (sharp)
