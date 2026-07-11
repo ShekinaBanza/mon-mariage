@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/wedding/site-footer";
 import Link from "next/link";
 import { Church, MapPin, Clock, Gift, Heart, ChevronDown, Sparkles, Calendar } from "lucide-react";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const s = await getPublicSettings();
