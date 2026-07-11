@@ -12,6 +12,7 @@ import jsQR from "jsqr";
 import {
   ScanLine, Camera, CameraOff, Keyboard, Check, X, AlertTriangle,
   Loader2, RefreshCw, UserCheck, Users, ShieldCheck, Clock, QrCode, ArrowLeft,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { SCAN_RESULT } from "@/lib/constants";
@@ -40,7 +41,11 @@ export default function ScannerPage() {
   const [result, setResult] = useState<ScanResponse | null>(null);
   const [resultOpen, setResultOpen] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
+  const [fastMode, setFastMode] = useState(true);
   const lastScanRef = useRef<{ input: string; time: number } | null>(null);
+  const lastFrameRef = useRef(0);
+  const processingRef = useRef(false);
+  const resultOpenRef = useRef(false);
 
   // Auth gate: scanner requires login as control_agent or higher
   const [authChecked, setAuthChecked] = useState(false);
@@ -63,11 +68,19 @@ export default function ScannerPage() {
       });
   }, []);
 
+  useEffect(() => {
+    processingRef.current = processing;
+  }, [processing]);
+
+  useEffect(() => {
+    resultOpenRef.current = resultOpen;
+  }, [resultOpen]);
+
   const startCamera = useCallback(async () => {
     setCameraError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
+        video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } },
         audio: false,
       });
       streamRef.current = stream;
@@ -96,12 +109,23 @@ export default function ScannerPage() {
     if (!scanning && !videoRef.current) return;
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    if (video && canvas && video.readyState === video.HAVE_ENOUGH_DATA) {
+    const nowFrame = performance.now();
+    if (
+      video &&
+      canvas &&
+      video.readyState === video.HAVE_ENOUGH_DATA &&
+      nowFrame - lastFrameRef.current >= 120 &&
+      !processingRef.current &&
+      !resultOpenRef.current
+    ) {
+      lastFrameRef.current = nowFrame;
       const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (ctx) {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      if (ctx && video.videoWidth > 0 && video.videoHeight > 0) {
+        const targetWidth = Math.min(480, video.videoWidth);
+        const targetHeight = Math.round(video.videoHeight * (targetWidth / video.videoWidth));
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        ctx.drawImage(video, 0, 0, targetWidth, targetHeight);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: "dontInvert" });
         if (code && code.data) {
@@ -112,7 +136,6 @@ export default function ScannerPage() {
           } else {
             lastScanRef.current = { input: code.data, time: now };
             handleInput(code.data);
-            return;
           }
         }
       }
@@ -125,7 +148,8 @@ export default function ScannerPage() {
   }, []);
 
   async function handleInput(input: string) {
-    if (processing) return;
+    if (processingRef.current) return;
+    processingRef.current = true;
     setProcessing(true);
     // Brief vibration feedback on mobile
     if (navigator.vibrate) navigator.vibrate(100);
@@ -136,6 +160,12 @@ export default function ScannerPage() {
         body: JSON.stringify({ input }),
       });
       const data: ScanResponse = await res.json();
+      if (fastMode && data.result === SCAN_RESULT.VALID && data.invitation?.type === "individual") {
+        const ok = await confirmInvitation(data.invitation.id);
+        if (ok) {
+          return;
+        }
+      }
       setResult(data);
       if (data.invitation) {
         // pre-select all not-yet-arrived members
@@ -145,6 +175,7 @@ export default function ScannerPage() {
     } catch {
       toast.error("Erreur réseau");
     } finally {
+      processingRef.current = false;
       setProcessing(false);
     }
   }
@@ -156,14 +187,10 @@ export default function ScannerPage() {
     setManualCode("");
   }
 
-  async function confirmEntry(refuse = false) {
-    if (!result?.invitation) return;
-    setProcessing(true);
+  async function confirmInvitation(invitationId: string, refuse = false, memberIds?: string[]) {
     try {
-      const body: any = { invitationId: result.invitation.id, refuse };
-      if (!refuse && result.invitation.type === "couple") {
-        body.memberIds = Array.from(selectedMembers);
-      }
+      const body: any = { invitationId, refuse };
+      if (!refuse && memberIds) body.memberIds = memberIds;
       const res = await fetch("/api/scan/confirm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -172,12 +199,31 @@ export default function ScannerPage() {
       const d = await res.json();
       if (res.ok) {
         toast.success(d.message);
-        setResultOpen(false);
-        setResult(null);
-      } else toast.error(d.error);
+        return true;
+      }
+      toast.error(d.error);
+      return false;
     } catch {
       toast.error("Erreur réseau");
+      return false;
+    }
+  }
+
+  async function confirmEntry(refuse = false) {
+    if (!result?.invitation) return;
+    processingRef.current = true;
+    setProcessing(true);
+    try {
+      const memberIds = !refuse && result.invitation.type === "couple"
+        ? Array.from(selectedMembers)
+        : undefined;
+      const ok = await confirmInvitation(result.invitation.id, refuse, memberIds);
+      if (ok) {
+        setResultOpen(false);
+        setResult(null);
+      }
     } finally {
+      processingRef.current = false;
       setProcessing(false);
     }
   }
@@ -269,6 +315,14 @@ export default function ScannerPage() {
           )}
           <Button onClick={() => setManualOpen(true)} variant="outline" className="border-white/30 text-white hover:bg-white/10" size="lg">
             <Keyboard className="mr-2 h-5 w-5" /> Saisir le code manuellement
+          </Button>
+          <Button
+            onClick={() => setFastMode((value) => !value)}
+            variant="outline"
+            className={fastMode ? "border-emerald-400/60 text-emerald-200 hover:bg-emerald-500/10" : "border-white/30 text-white hover:bg-white/10"}
+            size="lg"
+          >
+            <Zap className="mr-2 h-5 w-5" /> Mode rapide {fastMode ? "activé" : "désactivé"}
           </Button>
         </div>
       </div>

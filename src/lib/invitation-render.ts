@@ -7,6 +7,7 @@ import { ensureStorageDirs } from "@/lib/qr";
 import { generateQrCodeDataUrl } from "@/lib/qr";
 import { getSettings } from "@/lib/settings";
 import { getEmbeddedFontCss } from "@/lib/fonts";
+import { WEDDING_DATE_LABEL_UPPER } from "@/lib/wedding-config";
 
 const A4_LANDSCAPE_W = 1123; // px @ 96dpi
 const A4_LANDSCAPE_H = 794;
@@ -272,7 +273,7 @@ async function buildRenderData(invitationId: string): Promise<{ data: Invitation
       qrCode: inv.qrCode,
       qrDataUrl,
       publicUrl,
-      weddingDateLabel: `Vendredi 28 août 2026`,
+      weddingDateLabel: dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1),
       ceremonyAddress: settings.ceremonyAddress,
       ceremonyTime: settings.ceremonyTime,
       receptionAddress: settings.receptionAddress,
@@ -420,7 +421,7 @@ export async function renderSocialImage(): Promise<Buffer> {
     <text x="80" y="320" font-family="Cormorant Garamond, Georgia, serif" font-size="54" fill="#3A3527" font-weight="500">${escapeXml(settings.groomFirstName)} &amp; ${escapeXml(settings.brideFirstName)}</text>
     <text x="80" y="368" font-family="Jost, sans-serif" font-size="22" fill="#5E7A52" letter-spacing="3">${escapeXml(groom)}  &amp;  ${escapeXml(bride)}</text>
 
-    <text x="80" y="440" font-family="Playfair Display, serif" font-size="30" fill="#5E7A52" font-weight="600" letter-spacing="4">VENDREDI 28 AOÛT 2026</text>
+    <text x="80" y="440" font-family="Playfair Display, serif" font-size="30" fill="#5E7A52" font-weight="600" letter-spacing="4">${escapeXml(WEDDING_DATE_LABEL_UPPER)}</text>
     <text x="80" y="475" font-family="Cormorant Garamond, serif" font-size="20" fill="#7A6F56" font-style="italic">Cérémonie dès ${escapeXml(settings.ceremonyTime)} · Réception dès ${escapeXml(settings.receptionTime)}</text>
 
     <text x="80" y="560" font-family="Jost, sans-serif" font-size="14" fill="#C9A961" letter-spacing="4">INVITATION S &amp; R  ·  scannez votre QR code à l'entrée</text>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Download, Share2, Printer, Calendar, Copy, FileImage, FileText, MessageCircle } from "lucide-react";
 import { useState } from "react";
+import { WEDDING_END_ISO, WEDDING_START_ISO, trimTrailingSlash } from "@/lib/wedding-config";
 
 interface ActionsProps {
   token: string;
@@ -15,7 +16,7 @@ interface ActionsProps {
 
 export function InvitationActions({ token, code, displayName, baseUrl, shareText }: ActionsProps) {
   const [busy, setBusy] = useState<string | null>(null);
-  const url = `${baseUrl}/i/${token}`;
+  const url = `${trimTrailingSlash(baseUrl)}/i/${token}`;
 
   async function download(format: "pdf" | "jpg" | "png") {
     setBusy(format);
@@ -51,8 +52,8 @@ export function InvitationActions({ token, code, displayName, baseUrl, shareText
   }
 
   function addToCalendar() {
-    const d = new Date("2026-08-28T11:00:00");
-    const end = new Date("2026-08-28T22:00:00");
+    const d = new Date(WEDDING_START_ISO);
+    const end = new Date(WEDDING_END_ISO);
     const fmt = (x: Date) => x.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
     const ical = `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nURL:${url}\nDTSTART:${fmt(d)}\nDTEND:${fmt(end)}\nSUMMARY:Mariage de Shekina & Ruth\nDESCRIPTION:Invitation de ${displayName}\nLOCATION:Paroisse Saint-Paul Carrefour\nEND:VEVENT\nEND:VCALENDAR`;
     const blob = new Blob([ical], { type: "text/calendar" });

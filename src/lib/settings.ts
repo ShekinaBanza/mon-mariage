@@ -1,5 +1,28 @@
 import { db } from "@/lib/db";
 import { cache } from "react";
+import {
+  PUBLIC_BASE_URL,
+  WEDDING_CONTACT_EMAIL,
+  WEDDING_DATE_ISO,
+  WEDDING_GIFT_MESSAGE,
+  WEDDING_INVITATION_TEXT,
+  WEDDING_LOGO_PATH,
+  WEDDING_MAPS_LINK,
+  WEDDING_SOCIAL_IMAGE_PATH,
+  WEDDING_WHATSAPP_CONTACT,
+} from "@/lib/wedding-config";
+
+const PINNED_SETTINGS = {
+  weddingDate: new Date(WEDDING_DATE_ISO),
+  mapsLink: WEDDING_MAPS_LINK,
+  invitationText: WEDDING_INVITATION_TEXT,
+  giftMessage: WEDDING_GIFT_MESSAGE,
+  logoUrl: WEDDING_LOGO_PATH,
+  socialImageUrl: WEDDING_SOCIAL_IMAGE_PATH,
+  whatsappContact: WEDDING_WHATSAPP_CONTACT,
+  contactEmail: WEDDING_CONTACT_EMAIL,
+  publicBaseUrl: PUBLIC_BASE_URL,
+};
 
 /**
  * Get the singleton wedding settings. Creates a default row if missing.
@@ -8,7 +31,20 @@ import { cache } from "react";
 export const getSettings = cache(async () => {
   let settings = await db.weddingSettings.findUnique({ where: { id: "default" } });
   if (!settings) {
-    settings = await db.weddingSettings.create({ data: { id: "default" } });
+    settings = await db.weddingSettings.create({ data: { id: "default", ...PINNED_SETTINGS } });
+  } else {
+    const data: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(PINNED_SETTINGS)) {
+      const current = settings[key as keyof typeof settings];
+      if (value instanceof Date) {
+        if (!(current instanceof Date) || current.getTime() !== value.getTime()) data[key] = value;
+      } else if (current !== value) {
+        data[key] = value;
+      }
+    }
+    if (Object.keys(data).length > 0) {
+      settings = await db.weddingSettings.update({ where: { id: "default" }, data });
+    }
   }
   return settings;
 });
@@ -45,6 +81,7 @@ export interface PublicSettings {
   showSeatsOnInvitation: boolean;
   tableFormat: string;
   whatsappContact: string;
+  contactEmail: string | null;
   publicBaseUrl: string;
 }
 
@@ -80,6 +117,7 @@ export async function getPublicSettings(): Promise<PublicSettings> {
     showSeatsOnInvitation: s.showSeatsOnInvitation,
     tableFormat: s.tableFormat,
     whatsappContact: s.whatsappContact,
+    contactEmail: s.contactEmail,
     publicBaseUrl: s.publicBaseUrl,
   };
 }

@@ -7,6 +7,7 @@ import { Monogram } from "./monogram";
 import { FloralDivider } from "./floral-decorations";
 import { Button } from "@/components/ui/button";
 import { ROLE_LABELS } from "@/lib/constants";
+import { WEDDING_DATE_LABEL } from "@/lib/wedding-config";
 import { toast } from "sonner";
 import {
   LayoutDashboard, Users, Armchair, Map, Settings, Printer, ScanLine,
@@ -125,7 +126,7 @@ export function AdminShell({ user, children }: { user: { id: string; name: strin
         <main className="flex-1 p-4 lg:p-6">{children}</main>
 
         <footer className="mt-auto border-t border-gold/20 bg-card/60 px-4 py-3 text-center text-xs text-muted-foreground">
-          <Heart className="inline h-3 w-3 text-gold" /> S &amp; R — Mariage de Shekina &amp; Ruth · 28 août 2026
+          <Heart className="inline h-3 w-3 text-gold" /> S &amp; R — Mariage de Shekina &amp; Ruth · {WEDDING_DATE_LABEL}
         </footer>
       </div>
     </div>

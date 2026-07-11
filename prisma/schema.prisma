@@ -1,5 +1,5 @@
 // Wedding Invitation Application — Prisma Schema
-// S & R — Shekina BANZA & Ruth KASONGO — 28 août 2026
+// S & R — Shekina BANZA & Ruth KASONGO — 29 août 2026
 
 generator client {
   provider = "prisma-client-js"
@@ -63,15 +63,15 @@ model WeddingSettings {
   monogram             String   @default("S & R")
   eventTitle           String   @default("Invitation au Mariage")
   // Dates / lieux
-  weddingDate          DateTime @default("2026-08-28T00:00:00Z")
+  weddingDate          DateTime @default("2026-08-29T00:00:00Z")
   ceremonyAddress      String   @default("Paroisse Saint-Paul Carrefour")
   ceremonyTime         String   @default("11h00")
   receptionAddress     String   @default("Salle de réception — à confirmer")
   receptionTime        String   @default("19h00")
-  mapsLink             String   @default("")
+  mapsLink             String   @default("https://maps.app.goo.gl/JGNykCvg1DgKL2pi9")
   // Textes
-  invitationText       String   @default("Avec une immense joie et une profonde reconnaissance envers Dieu, nous souhaitons partager avec vous l'un des plus beaux moments de notre vie. Nous avons le plaisir de vous inviter à la célébration de notre mariage qui aura lieu le vendredi 28 août 2026. Nous serions très heureux de vous compter parmi nous pour célébrer ce jour si spécial.")
-  giftMessage          String   @default("Si vous souhaitez également nous accompagner par un cadeau, nous privilégions les cadeaux en espèces, qui nous aideront à bien commencer notre nouvelle vie à deux.")
+  invitationText       String   @default("Avec une immense joie et une profonde reconnaissance envers Dieu, nous souhaitons partager avec vous l'un des plus beaux moments de notre vie. Nous avons le plaisir de vous inviter à la célébration de notre mariage qui aura lieu le samedi 29 août 2026. Nous serions très heureux de vous compter parmi nous pour célébrer ce jour si spécial.")
+  giftMessage          String   @default("Si vous souhaitez également nous accompagner par un cadeau, nous privilégions les cadeaux en espèces.")
   romanticPhrase       String   @default("L'amour ne faille jamais.")
   closingSignature     String   @default("Avec toute notre affection, Shekina BANZA & Ruth KASONGO")
   instructions         String   @default("")
@@ -80,8 +80,8 @@ model WeddingSettings {
   secondaryColor       String   @default("#C9A961")   // brun doré
   accentColor          String   @default("#F5EFE0")   // ivoire
   font                 String   @default("Cormorant Garamond")
-  logoUrl              String?
-  socialImageUrl       String?
+  logoUrl              String?  @default("/logo-wedding.png")
+  socialImageUrl       String?  @default("/logo-social.png?v=20260829")
   // Limites
   maxPeople            Int      @default(300)
   maxInvitations       Int      @default(200)
@@ -91,9 +91,9 @@ model WeddingSettings {
   validationMode       String   @default("auto") // auto | manual
   showSeatsOnInvitation Boolean @default(true)
   tableFormat          String   @default("numeric") // numeric | alpha | custom
-  whatsappContact      String   @default("")
-  contactEmail         String?
-  publicBaseUrl        String   @default("")
+  whatsappContact      String   @default("+243904274087")
+  contactEmail         String?  @default("ashekinabanza@hotmail.com")
+  publicBaseUrl        String   @default("https://lightslategrey-mandrill-130636.hostingersite.com")
 
   updatedAt            DateTime @updatedAt
 }

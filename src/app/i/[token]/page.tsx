@@ -11,11 +11,17 @@ import type { Metadata } from "next";
 import { AlertTriangle, Clock, MapPin, Gift, Calendar, QrCode, ShieldCheck, Users, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {
+  PUBLIC_BASE_URL,
+  WEDDING_DATE_LABEL,
+  WEDDING_SOCIAL_IMAGE_PATH,
+  trimTrailingSlash,
+} from "@/lib/wedding-config";
 
 export const dynamic = "force-dynamic";
 
 function baseUrl(reqUrl?: string) {
-  return process.env.NEXT_PUBLIC_BASE_URL || "https://sr-wedding.app";
+  return trimTrailingSlash(process.env.NEXT_PUBLIC_BASE_URL || PUBLIC_BASE_URL);
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ token: string }> }): Promise<Metadata> {
@@ -23,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
   const inv = await db.invitation.findUnique({ where: { publicToken: token }, include: { members: true } });
   const s = await getPublicSettings();
   const ogUrl = `${baseUrl()}/i/${token}`;
-  const ogImage = `${baseUrl()}/api/og`;
+  const ogImage = `${baseUrl()}${WEDDING_SOCIAL_IMAGE_PATH}`;
   const names = getDisplayNames(s);
 
   if (!inv) {
@@ -41,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ token: st
       : `${inv.members[0].firstName} ${inv.members[0].lastName}`;
 
   const title = `Invitation S & R — ${displayName}`;
-  const description = `Vous êtes invité(e) au mariage de ${names.groomFull} & ${names.brideFull}, prévu le 28 août 2026. Consultez et téléchargez votre invitation personnelle.`;
+  const description = `Vous êtes invité(e) au mariage de ${names.groomFull} & ${names.brideFull}, prévu le ${WEDDING_DATE_LABEL.toLowerCase()}. Consultez et téléchargez votre invitation personnelle.`;
 
   return {
     title,
@@ -106,7 +112,7 @@ export default async function InvitationPage({ params }: { params: Promise<{ tok
   const seatCodes = inv.assignments.map((a) => a.seat.code).sort();
   const qrDataUrl = await generateQrCodeDataUrl(inv.qrCode);
 
-  const shareText = `Vous êtes invité(e) au mariage de Shekina & Ruth, prévu le 28 août 2026. Consultez et téléchargez votre invitation personnelle ici :`;
+  const shareText = `Vous êtes invité(e) au mariage de Shekina & Ruth, prévu le ${WEDDING_DATE_LABEL.toLowerCase()}. Consultez et téléchargez votre invitation personnelle ici :`;
 
   return (
     <main className="relative flex min-h-screen flex-col bg-background paper-texture">
@@ -207,7 +213,7 @@ export default async function InvitationPage({ params }: { params: Promise<{ tok
                     <Calendar className="h-4 w-4" />
                     <p className="text-[11px] uppercase tracking-[0.2em]">Date</p>
                   </div>
-                  <p className="mt-1 font-display text-lg font-semibold text-sage-deep">Vendredi 28 août 2026</p>
+                  <p className="mt-1 font-display text-lg font-semibold text-sage-deep">{WEDDING_DATE_LABEL}</p>
                 </div>
 
                 <div className="mt-3 space-y-3">
