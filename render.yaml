@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: mon-mariage
+    runtime: node
+    plan: starter
+    region: frankfurt
+    branch: main
+    buildCommand: bash scripts/render-build.sh
+    startCommand: bash scripts/render-start.sh
+    healthCheckPath: /api
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: DATABASE_URL
+        value: file:/var/data/custom.db
+      - key: SESSION_SECRET
+        sync: false
+      - key: NEXT_PUBLIC_BASE_URL
+        sync: false
+    disk:
+      name: wedding-data
+      mountPath: /var/data
+      sizeGB: 1
