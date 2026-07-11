@@ -19,6 +19,7 @@ pnpm-install*.log
 !.env.example
 
 # Local databases and generated data
+data/
 db/
 *.db
 *.db-journal
