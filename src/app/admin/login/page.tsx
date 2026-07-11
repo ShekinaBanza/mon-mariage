@@ -10,7 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Monogram } from "@/components/wedding/monogram";
 import { FloralDivider, FloralCorner } from "@/components/wedding/floral-decorations";
 import { toast } from "sonner";
-import { Lock, Mail, Loader2, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Lock, Mail, ArrowLeft, ShieldCheck } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -73,8 +73,8 @@ export default function AdminLoginPage() {
               <Input value={password} onChange={(e) => setPassword(e.target.value)} className="pl-9" type="password" required />
             </div>
           </div>
-          <Button type="submit" disabled={loading} className="w-full bg-sage-deep hover:bg-sage-deep/90">
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><ShieldCheck className="mr-2 h-4 w-4" /> Se connecter</>}
+          <Button type="submit" loading={loading} loadingText="Connexion..." className="w-full bg-sage-deep hover:bg-sage-deep/90">
+            <ShieldCheck className="mr-2 h-4 w-4" /> Se connecter
           </Button>
         </form>
 

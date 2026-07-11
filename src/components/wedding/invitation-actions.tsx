@@ -39,15 +39,18 @@ export function InvitationActions({ token, code, displayName, baseUrl, shareText
   }
 
   function shareWhatsApp() {
+    setBusy("whatsapp");
     const text = `${shareText}\n\n${url}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-    fetch(`/api/invitation/${token}/share`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ channel: "whatsapp" }) });
+    fetch(`/api/invitation/${token}/share`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ channel: "whatsapp" }) }).finally(() => setBusy(null));
     toast.success("Ouverture de WhatsApp...");
   }
 
   function copyLink() {
+    setBusy("copy");
     navigator.clipboard.writeText(url);
     fetch(`/api/invitation/${token}/share`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ channel: "copy" }) });
+    setTimeout(() => setBusy(null), 500);
     toast.success("Lien copié !");
   }
 
@@ -70,25 +73,25 @@ export function InvitationActions({ token, code, displayName, baseUrl, shareText
 
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      <Button onClick={() => download("pdf")} disabled={busy !== null} className="bg-sage-deep hover:bg-sage-deep/90">
+      <Button onClick={() => download("pdf")} loading={busy === "pdf"} loadingText="Generation..." disabled={busy !== null} className="bg-sage-deep hover:bg-sage-deep/90">
         {busy === "pdf" ? "Génération..." : <><FileText className="mr-2 h-4 w-4" /> Télécharger PDF</>}
       </Button>
-      <Button onClick={() => download("jpg")} disabled={busy !== null} variant="outline" className="border-gold/40 text-sage-deep hover:bg-gold/10">
+      <Button onClick={() => download("jpg")} loading={busy === "jpg"} loadingText="Generation..." disabled={busy !== null} variant="outline" className="border-gold/40 text-sage-deep hover:bg-gold/10">
         {busy === "jpg" ? "Génération..." : <><FileImage className="mr-2 h-4 w-4" /> Télécharger JPG</>}
       </Button>
-      <Button onClick={() => download("png")} disabled={busy !== null} variant="outline" className="border-gold/40 text-sage-deep hover:bg-gold/10">
+      <Button onClick={() => download("png")} loading={busy === "png"} loadingText="Generation..." disabled={busy !== null} variant="outline" className="border-gold/40 text-sage-deep hover:bg-gold/10">
         {busy === "png" ? "Génération..." : <><FileImage className="mr-2 h-4 w-4" /> Télécharger PNG</>}
       </Button>
-      <Button onClick={shareWhatsApp} className="bg-[#25D366] text-white hover:bg-[#1ebe5d]">
+      <Button onClick={shareWhatsApp} loading={busy === "whatsapp"} loadingText="Ouverture..." disabled={busy !== null} className="bg-[#25D366] text-white hover:bg-[#1ebe5d]">
         <MessageCircle className="mr-2 h-4 w-4" /> Partager WhatsApp
       </Button>
-      <Button onClick={copyLink} variant="outline">
+      <Button onClick={copyLink} loading={busy === "copy"} loadingText="Copie..." disabled={busy !== null} variant="outline">
         <Copy className="mr-2 h-4 w-4" /> Copier le lien
       </Button>
-      <Button onClick={print} variant="outline">
+      <Button onClick={print} disabled={busy !== null} variant="outline">
         <Printer className="mr-2 h-4 w-4" /> Imprimer
       </Button>
-      <Button onClick={addToCalendar} variant="outline" className="sm:col-span-2 lg:col-span-1">
+      <Button onClick={addToCalendar} disabled={busy !== null} variant="outline" className="sm:col-span-2 lg:col-span-1">
         <Calendar className="mr-2 h-4 w-4" /> Ajouter au calendrier
       </Button>
     </div>

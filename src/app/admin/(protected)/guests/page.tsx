@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
   Search, MoreHorizontal, CheckCircle2, XCircle, RefreshCw, Trash2,
-  ExternalLink, Armchair, QrCode, Eye, Filter, Download, ChevronLeft, ChevronRight,
+  ExternalLink, Eye, Download, ChevronLeft, ChevronRight,
   RotateCcw, UserCheck, MessageCircle, Loader2, FileSpreadsheet, UserX,
 } from "lucide-react";
 import Link from "next/link";
@@ -66,6 +66,7 @@ export default function GuestsPage() {
   const [selected, setSelected] = useState<Guest | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+  const [exporting, setExporting] = useState<string | null>(null);
   const [tables, setTables] = useState<TableOpt[]>([]);
   const [confirm, setConfirm] = useState<{ type: string; guest: Guest } | null>(null);
 
@@ -129,6 +130,8 @@ export default function GuestsPage() {
   }
 
   async function exportFullExcel(type: string) {
+    if (exporting) return;
+    setExporting(type);
     try {
       const res = await fetch(`/api/exports?format=csv&type=${type}`, { cache: "no-store" });
       if (!res.ok) throw new Error("Échec");
@@ -140,6 +143,8 @@ export default function GuestsPage() {
       toast.success(`Export ${type} téléchargé`);
     } catch {
       toast.error("Échec de l'export");
+    } finally {
+      setExporting(null);
     }
   }
 
@@ -154,17 +159,24 @@ export default function GuestsPage() {
           <Button onClick={exportCsv} variant="outline" size="sm" className="border-gold/40 text-sage-deep hover:bg-gold/10">
             <Download className="mr-1 h-3.5 w-3.5" /> Page courante
           </Button>
-          <Button onClick={() => exportFullExcel("all")} variant="outline" size="sm" className="border-gold/40 text-sage-deep hover:bg-gold/10">
+          <Button onClick={() => exportFullExcel("all")} loading={exporting === "all"} loadingText="Export..." disabled={exporting !== null} variant="outline" size="sm" className="border-gold/40 text-sage-deep hover:bg-gold/10">
             <FileSpreadsheet className="mr-1 h-3.5 w-3.5" /> Excel (tous)
           </Button>
-          <Button onClick={() => exportFullExcel("present")} variant="outline" size="sm" className="border-emerald-400 text-emerald-700 hover:bg-emerald-50">
+          <Button onClick={() => exportFullExcel("present")} loading={exporting === "present"} loadingText="Export..." disabled={exporting !== null} variant="outline" size="sm" className="border-emerald-400 text-emerald-700 hover:bg-emerald-50">
             <UserCheck className="mr-1 h-3.5 w-3.5" /> Présents
           </Button>
-          <Button onClick={() => exportFullExcel("absent")} variant="outline" size="sm" className="border-amber-400 text-amber-700 hover:bg-amber-50">
+          <Button onClick={() => exportFullExcel("absent")} loading={exporting === "absent"} loadingText="Export..." disabled={exporting !== null} variant="outline" size="sm" className="border-amber-400 text-amber-700 hover:bg-amber-50">
             <UserX className="mr-1 h-3.5 w-3.5" /> Absents
           </Button>
         </div>
       </div>
+
+      {actionLoading && (
+        <Card className="flex items-center gap-2 border-gold/30 bg-ivory/60 px-4 py-3 text-sm text-sage-deep">
+          <Loader2 className="h-4 w-4 animate-spin text-gold" />
+          Action en cours...
+        </Card>
+      )}
 
       {/* Filters */}
       <Card className="p-4">
@@ -346,10 +358,10 @@ export default function GuestsPage() {
             <Button variant="outline" onClick={() => setConfirm(null)}>Annuler</Button>
             <Button
               variant={confirm?.type === "delete" ? "destructive" : "default"}
-              disabled={actionLoading}
+              loading={actionLoading}
+              loadingText="Traitement..."
               onClick={() => confirm && (confirm.type === "delete" ? doAction(confirm.guest, "delete") : doAction(confirm.guest, confirm.type))}
             >
-              {actionLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Confirmer
             </Button>
           </DialogFooter>

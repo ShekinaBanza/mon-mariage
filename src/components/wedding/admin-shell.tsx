@@ -34,12 +34,18 @@ export function AdminShell({ user, children }: { user: { id: string; name: strin
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   async function logout() {
-    await fetch("/api/auth", { method: "DELETE" });
-    toast.success("Déconnecté");
-    router.push("/admin/login");
-    router.refresh();
+    setLoggingOut(true);
+    try {
+      await fetch("/api/auth", { method: "DELETE" });
+      toast.success("Déconnecté");
+      router.push("/admin/login");
+      router.refresh();
+    } finally {
+      setLoggingOut(false);
+    }
   }
 
   const isActive = (href: string) => href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
@@ -96,7 +102,7 @@ export function AdminShell({ user, children }: { user: { id: string; name: strin
                   <p className="truncate text-[10px] text-muted-foreground">{ROLE_LABELS[user.role] ?? user.role}</p>
                 </div>
               </div>
-              <Button onClick={logout} variant="ghost" size="sm" className="mt-2 w-full text-xs text-muted-foreground hover:text-destructive">
+              <Button onClick={logout} loading={loggingOut} loadingText="Deconnexion..." variant="ghost" size="sm" className="mt-2 w-full text-xs text-muted-foreground hover:text-destructive">
                 <LogOut className="mr-2 h-3 w-3" /> Déconnexion
               </Button>
             </div>

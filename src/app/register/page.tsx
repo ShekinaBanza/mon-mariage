@@ -78,6 +78,7 @@ export default function RegisterPage() {
   const [origin, setOrigin] = useState("");
   const [tables, setTables] = useState<TableOption[]>([]);
   const [placementLoading, setPlacementLoading] = useState(false);
+  const [navigationTarget, setNavigationTarget] = useState<string | null>(null);
   const [selectedTableId, setSelectedTableId] = useState("");
   const [selectedSeatIds, setSelectedSeatIds] = useState<string[]>([]);
   const [form, setForm] = useState({
@@ -144,6 +145,11 @@ export default function RegisterPage() {
       if (current.length >= requiredSeats) return [...current.slice(1), seatId];
       return [...current, seatId];
     });
+  }
+
+  function goTo(path: string, target: string) {
+    setNavigationTarget(target);
+    router.push(path);
   }
 
   function validate(): boolean {
@@ -484,10 +490,22 @@ export default function RegisterPage() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                  <Button onClick={() => router.push(`/i/${result.publicToken}`)} className="bg-sage-deep hover:bg-sage-deep/90">
+                  <Button
+                    onClick={() => goTo(`/i/${result.publicToken}`, "invitation")}
+                    loading={navigationTarget === "invitation"}
+                    loadingText="Ouverture..."
+                    disabled={navigationTarget !== null}
+                    className="bg-sage-deep hover:bg-sage-deep/90"
+                  >
                     <Sparkles className="mr-2 h-4 w-4" /> Voir mon invitation
                   </Button>
-                  <Button variant="outline" onClick={() => router.push("/")}>
+                  <Button
+                    variant="outline"
+                    onClick={() => goTo("/", "home")}
+                    loading={navigationTarget === "home"}
+                    loadingText="Retour..."
+                    disabled={navigationTarget !== null}
+                  >
                     Retour à l'accueil
                   </Button>
                 </div>
@@ -516,7 +534,14 @@ export default function RegisterPage() {
                       <p className="font-medium text-sage-deep">{d.displayName}</p>
                       <p className="text-xs text-muted-foreground">{d.reason} · code {d.code}</p>
                     </div>
-                    <Button size="sm" variant="outline" onClick={() => router.push(`/i/${d.publicToken}`)}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => goTo(`/i/${d.publicToken}`, d.invitationId)}
+                      loading={navigationTarget === d.invitationId}
+                      loadingText="Ouverture..."
+                      disabled={navigationTarget !== null}
+                    >
                       Consulter cette invitation
                     </Button>
                   </div>
@@ -526,7 +551,13 @@ export default function RegisterPage() {
                 <Button variant="ghost" onClick={() => setStep("form")}>
                   <ArrowLeft className="mr-2 h-4 w-4" /> Modifier mes informations
                 </Button>
-                <Button variant="outline" onClick={() => router.push("/find")}>
+                <Button
+                  variant="outline"
+                  onClick={() => goTo("/find", "find")}
+                  loading={navigationTarget === "find"}
+                  loadingText="Recherche..."
+                  disabled={navigationTarget !== null}
+                >
                   Rechercher une invitation
                 </Button>
               </div>

@@ -69,7 +69,7 @@ export default function FloorplanPage() {
           <label className="flex items-center gap-2 text-xs text-muted-foreground">
             <Switch checked={onlyFree} onCheckedChange={setOnlyFree} /> Places libres uniquement
           </label>
-          <Button onClick={load} variant="outline" size="sm"><RefreshCw className="mr-1 h-3.5 w-3.5" /> Actualiser</Button>
+          <Button onClick={load} loading={loading} loadingText="Actualisation..." variant="outline" size="sm"><RefreshCw className="mr-1 h-3.5 w-3.5" /> Actualiser</Button>
           <Button onClick={() => window.print()} variant="outline" size="sm"><Printer className="mr-1 h-3.5 w-3.5" /> Imprimer</Button>
         </div>
       </div>

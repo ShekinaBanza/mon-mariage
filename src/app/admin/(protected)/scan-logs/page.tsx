@@ -92,7 +92,7 @@ export default function ScanLogsPage() {
           <p className="text-sm text-muted-foreground">{total} scan(s) enregistré(s) · page {page}/{totalPages || 1}</p>
         </div>
         <div className="flex gap-2">
-          <Button onClick={load} variant="outline" size="sm"><RefreshCw className="mr-1 h-3.5 w-3.5" /> Actualiser</Button>
+          <Button onClick={load} loading={loading} loadingText="Actualisation..." variant="outline" size="sm"><RefreshCw className="mr-1 h-3.5 w-3.5" /> Actualiser</Button>
           <Button onClick={exportCsv} variant="outline" size="sm" className="border-gold/40 text-sage-deep hover:bg-gold/10">
             <Download className="mr-1 h-3.5 w-3.5" /> Export CSV
           </Button>

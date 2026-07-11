@@ -38,6 +38,8 @@ export default function ScannerPage() {
   const [manualOpen, setManualOpen] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [cameraStarting, setCameraStarting] = useState(false);
+  const [confirmingAction, setConfirmingAction] = useState<"accept" | "refuse" | null>(null);
   const [result, setResult] = useState<ScanResponse | null>(null);
   const [resultOpen, setResultOpen] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
@@ -77,7 +79,9 @@ export default function ScannerPage() {
   }, [resultOpen]);
 
   const startCamera = useCallback(async () => {
+    if (cameraStarting) return;
     setCameraError(null);
+    setCameraStarting(true);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } },
@@ -92,8 +96,10 @@ export default function ScannerPage() {
       tick();
     } catch (e: any) {
       setCameraError(e.message || "Accès caméra refusé. Utilisez la saisie manuelle.");
+    } finally {
+      setCameraStarting(false);
     }
-  }, []);
+  }, [cameraStarting]);
 
   const stopCamera = useCallback(() => {
     setScanning(false);
@@ -213,6 +219,7 @@ export default function ScannerPage() {
     if (!result?.invitation) return;
     processingRef.current = true;
     setProcessing(true);
+    setConfirmingAction(refuse ? "refuse" : "accept");
     try {
       const memberIds = !refuse && result.invitation.type === "couple"
         ? Array.from(selectedMembers)
@@ -225,6 +232,7 @@ export default function ScannerPage() {
     } finally {
       processingRef.current = false;
       setProcessing(false);
+      setConfirmingAction(null);
     }
   }
 
@@ -305,7 +313,7 @@ export default function ScannerPage() {
         {/* Controls */}
         <div className="mt-6 flex w-full max-w-md flex-col gap-3">
           {!scanning ? (
-            <Button onClick={startCamera} className="bg-gold text-slate-900 hover:bg-gold/90" size="lg">
+            <Button onClick={startCamera} loading={cameraStarting} loadingText="Activation..." className="bg-gold text-slate-900 hover:bg-gold/90" size="lg">
               <Camera className="mr-2 h-5 w-5" /> Activer la caméra
             </Button>
           ) : (
@@ -313,17 +321,24 @@ export default function ScannerPage() {
               <CameraOff className="mr-2 h-5 w-5" /> Arrêter la caméra
             </Button>
           )}
-          <Button onClick={() => setManualOpen(true)} variant="outline" className="border-white/30 text-white hover:bg-white/10" size="lg">
+          <Button onClick={() => setManualOpen(true)} disabled={processing} variant="outline" className="border-white/30 text-white hover:bg-white/10" size="lg">
             <Keyboard className="mr-2 h-5 w-5" /> Saisir le code manuellement
           </Button>
           <Button
             onClick={() => setFastMode((value) => !value)}
+            disabled={processing}
             variant="outline"
             className={fastMode ? "border-emerald-400/60 text-emerald-200 hover:bg-emerald-500/10" : "border-white/30 text-white hover:bg-white/10"}
             size="lg"
           >
             <Zap className="mr-2 h-5 w-5" /> Mode rapide {fastMode ? "activé" : "désactivé"}
           </Button>
+          {processing && (
+            <div className="flex items-center justify-center gap-2 rounded-md border border-gold/30 bg-black/35 px-3 py-2 text-sm text-gold">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Traitement en cours...
+            </div>
+          )}
         </div>
       </div>
 
@@ -348,7 +363,7 @@ export default function ScannerPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setManualOpen(false)}>Annuler</Button>
-            <Button onClick={submitManual} className="bg-sage-deep hover:bg-sage-deep/90">Rechercher</Button>
+            <Button onClick={submitManual} loading={processing} loadingText="Recherche..." disabled={processing} className="bg-sage-deep hover:bg-sage-deep/90">Rechercher</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -429,11 +444,11 @@ export default function ScannerPage() {
                 <Button variant="outline" onClick={closeResult} className="sm:mr-auto">Fermer</Button>
                 {result.result === SCAN_RESULT.VALID && result.invitation && (
                   <>
-                    <Button variant="destructive" onClick={() => confirmEntry(true)} disabled={processing}>
+                    <Button variant="destructive" onClick={() => confirmEntry(true)} loading={confirmingAction === "refuse"} loadingText="Refus..." disabled={processing}>
                       <X className="mr-2 h-4 w-4" /> Refuser l'entrée
                     </Button>
-                    <Button onClick={() => confirmEntry(false)} disabled={processing} className="bg-emerald-600 hover:bg-emerald-700">
-                      {processing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
+                    <Button onClick={() => confirmEntry(false)} loading={confirmingAction === "accept"} loadingText="Validation..." disabled={processing} className="bg-emerald-600 hover:bg-emerald-700">
+                      <Check className="mr-2 h-4 w-4" />
                       Confirmer l'entrée
                     </Button>
                   </>

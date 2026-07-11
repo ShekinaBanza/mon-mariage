@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Save, Loader2, Heart, Calendar, MapPin, Palette, Settings2, ShieldCheck } from "lucide-react";
+import { Save, Heart, Calendar, Palette, Settings2, ShieldCheck } from "lucide-react";
 
 export default function SettingsPage() {
   const [s, setS] = useState<any>(null);
@@ -46,8 +46,8 @@ export default function SettingsPage() {
           <h1 className="font-display text-2xl text-sage-deep sm:text-3xl">Paramètres du mariage</h1>
           <p className="text-sm text-muted-foreground">Configuration complète de l'événement</p>
         </div>
-        <Button onClick={save} disabled={saving} className="bg-sage-deep hover:bg-sage-deep/90">
-          {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />} Enregistrer
+        <Button onClick={save} loading={saving} loadingText="Enregistrement..." className="bg-sage-deep hover:bg-sage-deep/90">
+          <Save className="mr-2 h-4 w-4" /> Enregistrer
         </Button>
       </div>
 

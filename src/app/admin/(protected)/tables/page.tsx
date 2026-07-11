@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { Plus, Trash2, Lock, LockOpen, Users, Armchair, MapPin, Loader2 } from "lucide-react";
+import { Plus, Trash2, Lock, Armchair, MapPin, Loader2 } from "lucide-react";
 import { TABLE_ZONE_LABELS } from "@/lib/constants";
 
 interface TableItem {
@@ -32,6 +32,7 @@ export default function TablesPage() {
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [tableActionId, setTableActionId] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", zone: "groom", capacity: 8, shape: "round" });
 
   const load = useCallback(async () => {
@@ -67,6 +68,7 @@ export default function TablesPage() {
   }
 
   async function toggle(id: string, field: "active" | "locked", value: boolean) {
+    setTableActionId(`${id}:${field}`);
     const res = await fetch(`/api/tables/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -74,13 +76,16 @@ export default function TablesPage() {
     });
     if (res.ok) { toast.success("Modifié"); load(); }
     else toast.error("Échec");
+    setTableActionId(null);
   }
 
   async function remove(id: string, name: string) {
     if (!confirm(`Supprimer la table ${name} ?`)) return;
+    setTableActionId(`${id}:delete`);
     const res = await fetch(`/api/tables/${id}`, { method: "DELETE" });
     if (res.ok) { toast.success("Table supprimée"); load(); }
     else { const d = await res.json(); toast.error(d.error); }
+    setTableActionId(null);
   }
 
   const totalCapacity = tables.reduce((s, t) => s + t.capacity, 0);
@@ -120,7 +125,7 @@ export default function TablesPage() {
                       <MapPin className="h-3 w-3" /> {TABLE_ZONE_LABELS[t.zone]}
                     </p>
                   </div>
-                  <Button size="sm" variant="ghost" className="h-8 w-8 p-0 text-destructive" onClick={() => remove(t.id, t.name)}>
+                  <Button size="sm" variant="ghost" loading={tableActionId === `${t.id}:delete`} loadingText="" disabled={tableActionId !== null} className="h-8 w-8 p-0 text-destructive" onClick={() => remove(t.id, t.name)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -197,8 +202,8 @@ export default function TablesPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCreateOpen(false)}>Annuler</Button>
-            <Button onClick={create} disabled={creating} className="bg-sage-deep hover:bg-sage-deep/90">
-              {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Créer la table
+            <Button onClick={create} loading={creating} loadingText="Creation..." className="bg-sage-deep hover:bg-sage-deep/90">
+              <Plus className="mr-2 h-4 w-4" /> Créer la table
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -11,7 +11,7 @@ import { Monogram } from "@/components/wedding/monogram";
 import { FloralDivider, FloralCorner } from "@/components/wedding/floral-decorations";
 import { SiteFooter } from "@/components/wedding/site-footer";
 import { toast } from "sonner";
-import { Search, ArrowRight, Loader2, QrCode, Hash, Phone } from "lucide-react";
+import { Search, ArrowRight, QrCode, Hash, Phone } from "lucide-react";
 
 interface Match {
   publicToken: string;
@@ -26,10 +26,12 @@ export default function FindPage() {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openingToken, setOpeningToken] = useState<string | null>(null);
   const [matches, setMatches] = useState<Match[]>([]);
   const [searched, setSearched] = useState(false);
 
   async function search() {
+    if (loading) return;
     if (query.trim().length < 3) {
       toast.error("Saisissez au moins 3 caractères.");
       return;
@@ -49,6 +51,11 @@ export default function FindPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function openInvitation(token: string) {
+    setOpeningToken(token);
+    router.push(`/i/${token}`);
   }
 
   return (
@@ -76,8 +83,8 @@ export default function FindPage() {
                 className="pl-9"
               />
             </div>
-            <Button onClick={search} disabled={loading} className="bg-sage-deep hover:bg-sage-deep/90">
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Search className="mr-2 h-4 w-4" /> Rechercher</>}
+            <Button onClick={search} loading={loading} loadingText="Recherche..." className="bg-sage-deep hover:bg-sage-deep/90">
+              <Search className="mr-2 h-4 w-4" /> Rechercher
             </Button>
           </div>
           <div className="mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground">
@@ -110,7 +117,13 @@ export default function FindPage() {
                       <span>· Statut : {m.status}</span>
                     </div>
                   </div>
-                  <Button onClick={() => router.push(`/i/${m.publicToken}`)} className="bg-sage-deep hover:bg-sage-deep/90">
+                  <Button
+                    onClick={() => openInvitation(m.publicToken)}
+                    loading={openingToken === m.publicToken}
+                    loadingText="Ouverture..."
+                    disabled={openingToken !== null}
+                    className="bg-sage-deep hover:bg-sage-deep/90"
+                  >
                     Consulter <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Card>
