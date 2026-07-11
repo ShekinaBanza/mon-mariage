@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# Production and local logs
+*.log
+dev.log
+dev.err.log
+server.log
+pnpm-install*.log
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local databases and generated data
+db/
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# TypeScript and build cache
+*.tsbuildinfo
+
+# Local/editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.agents/
+.codex/
+
+# Local scratch/backup folders
+_backup_before_reorganization/
+_unclassified/
+
+# Runtime download output
+download/*
+!download/README.md
