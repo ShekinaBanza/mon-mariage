@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-import { Printer, Users, User, MapPin, Check, X, Download } from "lucide-react";
+import { Printer, Users, MapPin } from "lucide-react";
 
 interface Guest {
   id: string; code: string; publicToken: string; type: string; side: string; status: string;
@@ -61,8 +60,8 @@ export default function ListsPage() {
       {loading ? (
         <Skeleton className="h-96" />
       ) : (
-        <Tabs defaultValue="general" className="no-print">
-          <TabsList className="flex flex-wrap h-auto">
+        <Tabs defaultValue="general">
+          <TabsList className="no-print flex flex-wrap h-auto">
             <TabsTrigger value="general"><Users className="mr-1 h-3 w-3" /> Générale ({active.length})</TabsTrigger>
             <TabsTrigger value="table"><MapPin className="mr-1 h-3 w-3" /> Par table</TabsTrigger>
             <TabsTrigger value="groom">Homme ({groomSide.length})</TabsTrigger>

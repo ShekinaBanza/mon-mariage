@@ -12,7 +12,7 @@ import {
   WEDDING_WHATSAPP_CONTACT,
 } from "@/lib/wedding-config";
 
-const PINNED_SETTINGS = {
+const DEFAULT_SETTINGS = {
   weddingDate: new Date(WEDDING_DATE_ISO),
   mapsLink: WEDDING_MAPS_LINK,
   invitationText: WEDDING_INVITATION_TEXT,
@@ -31,20 +31,7 @@ const PINNED_SETTINGS = {
 export const getSettings = cache(async () => {
   let settings = await db.weddingSettings.findUnique({ where: { id: "default" } });
   if (!settings) {
-    settings = await db.weddingSettings.create({ data: { id: "default", ...PINNED_SETTINGS } });
-  } else {
-    const data: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(PINNED_SETTINGS)) {
-      const current = settings[key as keyof typeof settings];
-      if (value instanceof Date) {
-        if (!(current instanceof Date) || current.getTime() !== value.getTime()) data[key] = value;
-      } else if (current !== value) {
-        data[key] = value;
-      }
-    }
-    if (Object.keys(data).length > 0) {
-      settings = await db.weddingSettings.update({ where: { id: "default" }, data });
-    }
+    settings = await db.weddingSettings.create({ data: { id: "default", ...DEFAULT_SETTINGS } });
   }
   return settings;
 });

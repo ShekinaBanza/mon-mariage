@@ -7,7 +7,7 @@ import { ensureStorageDirs } from "@/lib/qr";
 import { generateQrCodeDataUrl } from "@/lib/qr";
 import { getSettings } from "@/lib/settings";
 import { getEmbeddedFontCss } from "@/lib/fonts";
-import { WEDDING_DATE_LABEL_UPPER } from "@/lib/wedding-config";
+import { formatWeddingDateLabel } from "@/lib/date-format";
 
 const A4_LANDSCAPE_W = 1123; // px @ 96dpi
 const A4_LANDSCAPE_H = 794;
@@ -251,13 +251,7 @@ async function buildRenderData(invitationId: string): Promise<{ data: Invitation
   const qrDataUrl = await generateQrCodeDataUrl(inv.qrCode);
   const publicUrl = `${settings.publicBaseUrl || ""}/i/${inv.publicToken}`;
 
-  const date = settings.weddingDate;
-  const dateLabel = new Intl.DateTimeFormat("fr-FR", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(date);
+  const dateLabel = formatWeddingDateLabel(settings.weddingDate);
 
   return {
     invitation: inv,
@@ -273,7 +267,7 @@ async function buildRenderData(invitationId: string): Promise<{ data: Invitation
       qrCode: inv.qrCode,
       qrDataUrl,
       publicUrl,
-      weddingDateLabel: dateLabel.charAt(0).toUpperCase() + dateLabel.slice(1),
+      weddingDateLabel: dateLabel,
       ceremonyAddress: settings.ceremonyAddress,
       ceremonyTime: settings.ceremonyTime,
       receptionAddress: settings.receptionAddress,
@@ -364,6 +358,7 @@ export async function generateAndStoreInvitationFiles(invitationId: string): Pro
 /** Build the social share image (1200×630) — generic, no real QR (cached by WhatsApp). */
 export async function renderSocialImage(): Promise<Buffer> {
   const settings = await getSettings();
+  const weddingDateLabelUpper = formatWeddingDateLabel(settings.weddingDate, true);
   const W = 1200;
   const H = 630;
   const groom = `${settings.groomFirstName} ${settings.groomLastName}`.trim();
@@ -421,7 +416,7 @@ export async function renderSocialImage(): Promise<Buffer> {
     <text x="80" y="320" font-family="Cormorant Garamond, Georgia, serif" font-size="54" fill="#3A3527" font-weight="500">${escapeXml(settings.groomFirstName)} &amp; ${escapeXml(settings.brideFirstName)}</text>
     <text x="80" y="368" font-family="Jost, sans-serif" font-size="22" fill="#5E7A52" letter-spacing="3">${escapeXml(groom)}  &amp;  ${escapeXml(bride)}</text>
 
-    <text x="80" y="440" font-family="Playfair Display, serif" font-size="30" fill="#5E7A52" font-weight="600" letter-spacing="4">${escapeXml(WEDDING_DATE_LABEL_UPPER)}</text>
+    <text x="80" y="440" font-family="Playfair Display, serif" font-size="30" fill="#5E7A52" font-weight="600" letter-spacing="4">${escapeXml(weddingDateLabelUpper)}</text>
     <text x="80" y="475" font-family="Cormorant Garamond, serif" font-size="20" fill="#7A6F56" font-style="italic">Cérémonie dès ${escapeXml(settings.ceremonyTime)} · Réception dès ${escapeXml(settings.receptionTime)}</text>
 
     <text x="80" y="560" font-family="Jost, sans-serif" font-size="14" fill="#C9A961" letter-spacing="4">INVITATION S &amp; R  ·  scannez votre QR code à l'entrée</text>

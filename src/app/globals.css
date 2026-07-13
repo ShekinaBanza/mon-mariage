@@ -226,5 +226,16 @@
 /* Print styles */
 @media print {
   .no-print { display: none !important; }
+  .admin-sidebar,
+  .admin-header,
+  .admin-footer {
+    display: none !important;
+  }
+  .admin-main-shell {
+    padding: 0 !important;
+  }
+  .lg\:pl-64 {
+    padding-left: 0 !important;
+  }
   body { background: white !important; }
 }

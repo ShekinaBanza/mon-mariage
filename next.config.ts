@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: appDir,
   },
+  experimental: {
+    cpus: 1,
+  },
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

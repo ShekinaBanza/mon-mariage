@@ -109,6 +109,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       const settings = await getSettings();
       const updated = await db.invitation.findUnique({ where: { id } });
       const link = `${settings.publicBaseUrl || ""}/i/${updated!.publicToken}`;
+      await db.activityLog.create({ data: { actorId: user.id, action: "resend_whatsapp_link", entity: "invitation", entityId: id, ip } });
       return NextResponse.json({ success: true, link, message: "Lien prêt à partager." });
     }
     case "delete": {

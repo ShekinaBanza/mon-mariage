@@ -21,6 +21,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (body.positionX !== undefined) data.positionX = body.positionX;
   if (body.positionY !== undefined) data.positionY = body.positionY;
   const table = await db.table.update({ where: { id }, data });
+  await db.activityLog.create({
+    data: {
+      actorId: user.id,
+      action: "update_table",
+      entity: "table",
+      entityId: id,
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+      meta: JSON.stringify(data),
+    },
+  });
   return NextResponse.json({ success: true, table });
 }
 
@@ -33,5 +43,14 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const count = await db.seatAssignment.count({ where: { tableId: id } });
   if (count > 0) return NextResponse.json({ error: "Impossible de supprimer une table avec des places occupées." }, { status: 400 });
   await db.table.delete({ where: { id } });
+  await db.activityLog.create({
+    data: {
+      actorId: user.id,
+      action: "delete_table",
+      entity: "table",
+      entityId: id,
+      ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim(),
+    },
+  });
   return NextResponse.json({ success: true });
 }

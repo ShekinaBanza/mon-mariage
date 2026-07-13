@@ -6,13 +6,14 @@ import { FloralCorner, FloralDivider, FloatingPetals, FloralBranch } from "@/com
 import { SiteFooter } from "@/components/wedding/site-footer";
 import Link from "next/link";
 import { Church, MapPin, Clock, Gift, Heart, ChevronDown, Sparkles, Calendar } from "lucide-react";
-import { WEDDING_DATE_LABEL } from "@/lib/wedding-config";
+import { formatWeddingDateLabel } from "@/lib/date-format";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const s = await getPublicSettings();
   const names = getDisplayNames(s);
+  const weddingDateLabel = formatWeddingDateLabel(s.weddingDate);
   const stats = await getQuickStats();
 
   return (
@@ -57,7 +58,7 @@ export default async function HomePage() {
         <FloralDivider className="my-8 animate-fade-up" />
 
         <p className="animate-fade-up font-display text-xl text-sage-deep sm:text-2xl" style={{ animationDelay: "0.9s" }}>
-          {WEDDING_DATE_LABEL}
+          {weddingDateLabel}
         </p>
 
         <p className="mt-3 animate-fade-up max-w-md font-serif-display text-lg italic text-muted-foreground" style={{ animationDelay: "1.1s" }}>

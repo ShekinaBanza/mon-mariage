@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Save, Heart, Calendar, Palette, Settings2, ShieldCheck } from "lucide-react";
+import { formatWeddingDateLabel } from "@/lib/date-format";
 
 export default function SettingsPage() {
   const [s, setS] = useState<any>(null);
@@ -26,18 +27,29 @@ export default function SettingsPage() {
 
   async function save() {
     setSaving(true);
-    const res = await fetch("/api/settings", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(s),
-    });
-    const d = await res.json();
-    if (res.ok) toast.success("Paramètres enregistrés");
-    else toast.error(d.error || "Échec");
-    setSaving(false);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(s),
+      });
+      const d = await res.json();
+      if (res.ok) {
+        setS(d.settings);
+        toast.success("Parametres enregistres");
+      } else {
+        toast.error(d.error || "Echec");
+      }
+    } catch {
+      toast.error("Erreur reseau");
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (loading || !s) return <Skeleton className="h-96" />;
+
+  const footerPreview = `${s.monogram || "S & R"} — Mariage de ${s.groomFirstName || ""} & ${s.brideFirstName || ""} · ${formatWeddingDateLabel(s.weddingDate)}`;
 
   return (
     <div className="space-y-5">
@@ -70,6 +82,10 @@ export default function SettingsPage() {
               <Field label="Nom de la mariée"><Input value={s.brideLastName} onChange={(e) => set("brideLastName", e.target.value)} /></Field>
               <Field label="Monogramme"><Input value={s.monogram} onChange={(e) => set("monogram", e.target.value)} /></Field>
               <Field label="Titre de l'événement"><Input value={s.eventTitle} onChange={(e) => set("eventTitle", e.target.value)} /></Field>
+            </div>
+            <div className="rounded-lg border border-gold/20 bg-ivory/50 p-3">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">Bas de page</p>
+              <p className="mt-1 font-medium text-sage-deep">{footerPreview}</p>
             </div>
           </Card>
         </TabsContent>

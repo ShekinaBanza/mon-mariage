@@ -44,7 +44,11 @@ export async function PUT(req: NextRequest) {
     }
   }
 
-  const updated = await db.weddingSettings.update({ where: { id: "default" }, data });
+  const updated = await db.weddingSettings.upsert({
+    where: { id: "default" },
+    create: { id: "default", ...data },
+    update: data,
+  });
   await db.activityLog.create({ data: { actorId: user.id, action: "update_settings", entity: "settings", entityId: "default", ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() } });
   return NextResponse.json({ success: true, settings: updated });
 }
