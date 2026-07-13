@@ -1,16 +1,22 @@
 import { db } from "@/lib/db";
-import sharp from "sharp";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import path from "path";
 import fs from "fs/promises";
 import { ensureStorageDirs } from "@/lib/qr";
 import { generateQrCodeDataUrl } from "@/lib/qr";
 import { getSettings } from "@/lib/settings";
-import { getEmbeddedFontCss } from "@/lib/fonts";
+import { getEmbeddedFontCss, setupFontRendering } from "@/lib/fonts";
 import { formatWeddingDateLabel } from "@/lib/date-format";
 
 const A4_LANDSCAPE_W = 1123; // px @ 96dpi
 const A4_LANDSCAPE_H = 794;
+let sharpPromise: Promise<any> | null = null;
+
+async function getSharp() {
+  setupFontRendering();
+  sharpPromise ??= import("sharp").then((mod: any) => mod.default ?? mod);
+  return sharpPromise;
+}
 
 interface InvitationRenderData {
   monogram: string;
@@ -287,6 +293,7 @@ async function buildRenderData(invitationId: string): Promise<{ data: Invitation
 export async function renderInvitationPng(invitationId: string, scale = 2): Promise<Buffer> {
   const { data } = await buildRenderData(invitationId);
   const svg = await buildInvitationSvg(data);
+  const sharp = await getSharp();
   return sharp(Buffer.from(svg), { density: 96 * scale })
     .png()
     .toBuffer();
@@ -302,6 +309,7 @@ export async function renderInvitationSvg(invitationId: string): Promise<string>
 export async function renderInvitationJpg(invitationId: string, scale = 2): Promise<Buffer> {
   const { data } = await buildRenderData(invitationId);
   const svg = await buildInvitationSvg(data);
+  const sharp = await getSharp();
   return sharp(Buffer.from(svg), { density: 96 * scale })
     .jpeg({ quality: 92 })
     .toBuffer();
@@ -424,6 +432,7 @@ export async function renderSocialImage(): Promise<Buffer> {
     <g transform="translate(0,0)">${qrSvg}</g>
   </svg>`;
 
+  const sharp = await getSharp();
   return sharp(Buffer.from(svg)).jpeg({ quality: 90 }).toBuffer();
 }
 
